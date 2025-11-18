@@ -2,3 +2,7 @@
 - avant d'envoyer le code :
   - `npx prettier -w .`
   - `npx eslint`
+- Pour lancer le projet il faut faire un 
+  - `npm install`
+  - `npm run web`
+  - ensuite scanner le qr code avec expo go
