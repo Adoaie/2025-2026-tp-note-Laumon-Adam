@@ -1,4 +1,4 @@
-import { Image, View, ViewStyle } from "react-native";
+import { Image, ImageStyle, View, ViewStyle } from "react-native";
 import { Text } from "react-native-paper";
 import { job } from "@/models/job";
 import { ScrollView } from "react-native-gesture-handler";
@@ -11,6 +11,15 @@ export type JobsDetailsProps = {
 };
 const styles: Record<string, ViewStyle> = {
   container: { padding: 10, gap: 10 },
+  entrepriseContent: { flexDirection: "column" },
+  entrepriseContainer: { flexDirection: "row", alignItems: "center", gap: 10 },
+};
+const imageStyle: ImageStyle = {
+  height: 100,
+  width: 100,
+  borderRadius: 100,
+  borderColor: "purple",
+  borderWidth: 3,
 };
 const JobDetails = ({ route }: JobsDetailsProps) => {
   const job = route.params.job;
@@ -18,22 +27,16 @@ const JobDetails = ({ route }: JobsDetailsProps) => {
     <ScrollView>
       <View style={styles.container}>
         <Text variant="displaySmall">Poste : {job.poste}</Text>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <View style={styles.entrepriseContainer}>
           <Image
             source={{
               uri:
                 `${job.entreprisePhoto}` ||
                 "https://freesvg.org/img/Image-Not-Found.png",
             }}
-            style={{
-              height: 100,
-              width: 100,
-              borderRadius: 100,
-              borderColor: "purple",
-              borderWidth: 3,
-            }}
+            style={imageStyle}
           />
-          <View style={{ flexDirection: "column" }}>
+          <View style={styles.entrepriseContent}>
             <Text variant="headlineSmall">Entreprise : {job.entreprise}</Text>
             <Text>Ville :{job.ville}</Text>
             <Text>
@@ -48,7 +51,6 @@ const JobDetails = ({ route }: JobsDetailsProps) => {
           <Text variant="bodySmall">Téléphone RH : {job.telephone}</Text>
           <Text variant="bodySmall">Date : {job.date}</Text>
         </View>
-
         <Text variant="bodyLarge">Description : </Text>
         <Text variant="bodySmall">{job.description}</Text>
         <AddRemoveFavorites item={job} />
