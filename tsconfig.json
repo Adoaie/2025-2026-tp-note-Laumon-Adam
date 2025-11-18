@@ -5,7 +5,7 @@
     "noImplicitAny": true,
     "strictPropertyInitialization": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   }
 }

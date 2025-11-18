@@ -1,17 +1,17 @@
 import { View, Text } from "react-native";
-import { Movie } from "@/types";
 import { Button, Card } from "react-native-paper";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "@/App";
 import { RootState } from "@/stores/store";
 import { useDispatch, useSelector } from "react-redux";
 import { push, remove } from "@/stores/favouriteSlice";
+import { job } from "@/models/job";
 
-type MovieListProps = {
-  movies: Array<Movie>;
+type JobsListProps = {
+  jobs: Array<job>;
 };
 
-const MovieList = ({ movies }: MovieListProps) => {
+const JobsList = ({ jobs }: JobsListProps) => {
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "Details">>();
 
@@ -19,20 +19,20 @@ const MovieList = ({ movies }: MovieListProps) => {
     (state: RootState) => state.favourite.value,
   );
 
-  const isInFavourite = (id: number): boolean => {
+  const isInFavourite = (id: string): boolean => {
     return favouriteMovies.some((movie) => movie.id === id);
   };
 
   const dispatch = useDispatch();
 
-  movies = Array.from(new Set(movies));
+  jobs = Array.from(new Set(jobs));
 
   return (
     <View>
-      {movies.map((movie) => {
+      {jobs.map((job) => {
         return (
           <Card
-            key={movie.original_title + movie.id}
+            key={job.poste + job.id}
             style={{
               margin: 10,
               borderRadius: 10,
@@ -41,35 +41,30 @@ const MovieList = ({ movies }: MovieListProps) => {
             }}
             onPress={() =>
               navigation.navigate("Details", {
-                movie: movie,
+                job: job,
               })
             }
           >
-            <Card.Title
-              title={movie.original_title}
-              subtitle={movie.release_date}
-            />
+            <Card.Title title={job.poste} subtitle={job.date} />
             <Card.Cover
               source={{
                 uri:
-                  `https://image.tmdb.org/t/p/w500${movie.poster_path}` ||
+                  `${job.entreprisePhoto}` ||
                   "https://freesvg.org/img/Image-Not-Found.png",
               }}
             />
             <Card.Content>
-              <Text style={{ fontStyle: "italic" }}>
-                {movie.vote_average} / 10
-              </Text>
-              <Text>{movie.overview}</Text>
+              <Text style={{ fontStyle: "italic" }}>{job.entreprise}</Text>
+              <Text>{job.description}</Text>
             </Card.Content>
 
             <Card.Actions>
-              {!isInFavourite(movie.id) ? (
-                <Button onPressOut={() => dispatch(push(movie))}>
+              {!isInFavourite(job.id) ? (
+                <Button onPressOut={() => dispatch(push(job))}>
                   Ajouter au favoris
                 </Button>
               ) : (
-                <Button onPressOut={() => dispatch(remove(movie.id))}>
+                <Button onPressOut={() => dispatch(remove(job.id))}>
                   Supprimer des favoris
                 </Button>
               )}
@@ -81,4 +76,4 @@ const MovieList = ({ movies }: MovieListProps) => {
   );
 };
 
-export default MovieList;
+export default JobsList;

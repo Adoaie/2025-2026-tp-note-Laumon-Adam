@@ -1,31 +1,27 @@
-import { ScrollView, View } from "react-native";
-import movies1 from "@/helpers/PopularMovies_p1.json" with { type: "json" };
-import movies2 from "@/helpers/PopularMovies_p2.json" with { type: "json" };
-
+import { ScrollView, View,Text } from "react-native";
+import jobsData from "@/helpers/jobs.json" with { type: "json" };
 import { useEffect, useState } from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { Movie, Page } from "@/types";
 import { RootStackParamList } from "@/App";
 import { Button } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { RootState } from "@/stores/store";
-import MovieList from "@/components/organism/movieList";
 import { ViewStyle } from "react-native";
+import { job } from "@/models/job";
+import JobsList from "../organism/jobsList";
 
-const Movies = () => {
+const Jobs = () => {
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "Details">>();
 
-  const [movies, setMovies] = useState<Movie[]>([]);
-
+  const [jobs, setJobs] = useState<Array<job>>([]);
   useEffect(() => {
-    getPopularMovies(movies1);
-    getPopularMovies(movies2);
-    return () => { };
+    getJobs(jobsData);
+    return () => {};
   }, []);
 
-  const getPopularMovies = (page: Page) => {
-    setMovies((prevMovies) => [...prevMovies, ...page.results]);
+  const getJobs = (newJobs: Array<job>) => {
+    setJobs((prevJobs) => [...prevJobs, ...newJobs]);
   };
 
   const favouriteMovies = useSelector(
@@ -33,8 +29,8 @@ const Movies = () => {
   );
   const styles: Record<string, ViewStyle> = {
     container: { flex: 1, alignItems: "center" },
-    buttonStyle: { maxWidth: 200, margin: 20 }
-  }
+    buttonStyle: { maxWidth: 200, margin: 20 },
+  };
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -45,10 +41,11 @@ const Movies = () => {
         >
           Favoris ({favouriteMovies.length})
         </Button>
-        <MovieList movies={movies} />
+        <Text>Nombre de jobs :  {jobs.length}</Text>
+        <JobsList jobs={jobs}></JobsList>
       </View>
     </ScrollView>
   );
 };
 
-export default Movies;
+export default Jobs;
