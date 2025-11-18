@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { job } from "@/models/job";
-
+import Toast from "react-native-toast-message";
 interface FavouriteState {
   value: Array<job>;
 }
@@ -13,16 +13,24 @@ export const favouriteSlice = createSlice({
   name: "counter",
   initialState,
   reducers: {
-    push: (state, job: PayloadAction<job>) => {
+    pushFavorites: (state, job: PayloadAction<job>) => {
+      Toast.show({
+        type: "success",
+        text1: `Job ${job.payload.poste} ajouté aux favoris !`,
+      });
       state.value.push(job.payload);
     },
-    remove: (state, id: PayloadAction<string>) => {
+    removeFavorite: (state, id: PayloadAction<string>) => {
+      Toast.show({
+        type: "success",
+        text1: "Job retiré des favoris.",
+      });
       state.value = state.value.filter((m) => m.id != id.payload);
     },
   },
 });
 
-export const { push, remove } = favouriteSlice.actions;
+export const { pushFavorites, removeFavorite } = favouriteSlice.actions;
 export default favouriteSlice.reducer;
 
 export const selectIsInFavourite = (

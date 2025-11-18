@@ -1,11 +1,9 @@
-import { View, Text } from "react-native";
-import { Button, Card } from "react-native-paper";
+import { View, Text, FlatList } from "react-native";
+import { Card } from "react-native-paper";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "@/App";
-import { RootState } from "@/stores/store";
-import { useDispatch, useSelector } from "react-redux";
-import { push, remove } from "@/stores/favouriteSlice";
 import { job } from "@/models/job";
+import AddRemoveFavorites from "../atoms/addRemoveFavorites";
 
 type JobsListProps = {
   jobs: Array<job>;
@@ -15,24 +13,15 @@ const JobsList = ({ jobs }: JobsListProps) => {
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "Details">>();
 
-  const favouriteMovies = useSelector(
-    (state: RootState) => state.favourite.value,
-  );
-
-  const isInFavourite = (id: string): boolean => {
-    return favouriteMovies.some((movie) => movie.id === id);
-  };
-
-  const dispatch = useDispatch();
-
   jobs = Array.from(new Set(jobs));
 
   return (
     <View>
-      {jobs.map((job) => {
-        return (
+      <FlatList
+        data={jobs}
+        keyExtractor={(item: job) => item.id}
+        renderItem={({ item }) => (
           <Card
-            key={job.poste + job.id}
             style={{
               margin: 10,
               borderRadius: 10,
@@ -41,37 +30,24 @@ const JobsList = ({ jobs }: JobsListProps) => {
             }}
             onPress={() =>
               navigation.navigate("Details", {
-                job: job,
+                job: item,
               })
             }
           >
-            <Card.Title title={job.poste} subtitle={job.date} />
-            <Card.Cover
-              source={{
-                uri:
-                  `${job.entreprisePhoto}` ||
-                  "https://freesvg.org/img/Image-Not-Found.png",
-              }}
-            />
+            <Card.Title title={item.poste} subtitle={`date : ${item.date}`} />
             <Card.Content>
-              <Text style={{ fontStyle: "italic" }}>{job.entreprise}</Text>
-              <Text>{job.description}</Text>
+              <Text style={{ fontStyle: "italic" }}>
+                Entreprise : {item.entreprise}
+              </Text>
+              <Text>Description : {item.description}</Text>
             </Card.Content>
 
             <Card.Actions>
-              {!isInFavourite(job.id) ? (
-                <Button onPressOut={() => dispatch(push(job))}>
-                  Ajouter au favoris
-                </Button>
-              ) : (
-                <Button onPressOut={() => dispatch(remove(job.id))}>
-                  Supprimer des favoris
-                </Button>
-              )}
+              <AddRemoveFavorites item={item}></AddRemoveFavorites>
             </Card.Actions>
           </Card>
-        );
-      })}
+        )}
+      />
     </View>
   );
 };
